@@ -1,6 +1,9 @@
 {
   "$schema": "https://json.schemastore.org/tsconfig",
   "extends": "@eiog/ts-config/tsconfig.json",
+  "compilerOptions": {
+    "outDir": "dist"
+  },
   "include": ["src"],
-  "exclude": ["node_modules", "dist", "test"]
+  "exclude": ["node_modules", "dist", "test","public/x-bogus.cjs"]
 }
