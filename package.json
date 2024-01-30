@@ -55,6 +55,9 @@
     "preinstall": "npx only-allow pnpm",
     "postinstall": "npx simple-git-hooks"
   },
+  "dependencies": {
+    "object-path": "^0.11.8"
+  },
   "devDependencies": {
     "@eiog/eslint-config-ts": "^0.0.2",
     "@eiog/ts-config": "^0.0.3",
@@ -83,8 +86,5 @@
     "*.{js,jsx,ts,tsx}": [
       "pnpm lint:fix"
     ]
-  },
-  "dependencies": {
-    "object-path": "^0.11.8"
   }
 }

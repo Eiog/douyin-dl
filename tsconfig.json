@@ -5,5 +5,5 @@
     "outDir": "dist"
   },
   "include": ["src"],
-  "exclude": ["node_modules", "dist", "test","public/x-bogus.cjs"]
+  "exclude": ["node_modules", "dist", "test", "public/x-bogus.cjs"]
 }
