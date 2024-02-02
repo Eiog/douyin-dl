@@ -61,6 +61,7 @@
   "devDependencies": {
     "@eiog/eslint-config-ts": "^0.0.2",
     "@eiog/ts-config": "^0.0.3",
+    "@types/node": "^20.11.15",
     "@types/object-path": "^0.11.4",
     "@vitest/ui": "^1.1.3",
     "bumpp": "^9.2.1",
