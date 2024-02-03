@@ -31,8 +31,17 @@ export function setCookie(cookie: string) {
  * @returns boolean
  */
 export const validateUrl = (url: string) => shareRegex.test(url)
-export const getVideo = (data: DouyinVideoDataResult): string[] | null => get(data, 'aweme_detail.video.play_addr.url_list')
-export const getCover = (data: DouyinVideoDataResult): string[] | null => get(data, 'aweme_detail.video.origin_cover.url_list')
+
+export const getVideoId = (data: DouyinVideoDataResult): string | null => get(data, 'aweme_detail.aweme_id')
+export const getAuthorId = (data: DouyinVideoDataResult): number | null => get(data, 'aweme_detail.author_user_id')
+export const getSecUid = (data: DouyinVideoDataResult): string | null => get(data, 'aweme_detail.author.sec_uid')
+export const getNickName = (data: DouyinVideoDataResult): string | null => get(data, 'aweme_detail.author.nickname')
+export const getMusic = (data: DouyinVideoDataResult): string | null => get(data, 'aweme_detail.music.title')
+
+export const getVideoUrl = (data: DouyinVideoDataResult): string[] | null => get(data, 'aweme_detail.video.play_addr.url_list')
+export const getAvatarUrl = (data: DouyinVideoDataResult): string[] | null => get(data, 'aweme_detail.author.avatar_thumb.url_list')
+export const getCoverUrl = (data: DouyinVideoDataResult): string[] | null => get(data, 'aweme_detail.video.origin_cover.url_list')
+export const getMusicUrl = (data: DouyinVideoDataResult): string[] | null => get(data, 'aweme_detail.music.play_url.uri')
 export function getShortUrlByShareUrl(url: string) {
   const match = url.match(shareRegex)
   if (match && match?.length > 0)
@@ -90,23 +99,17 @@ export function getDouyinVideoDataByVideoId(videoId: string): Promise<DouyinVide
     })
   })
 }
-export function formatDouyinVideoData(data: any) {
+export function format(data: DouyinVideoDataResult) {
   return {
-    author: {
-      avatar_thumb: get(data, 'author.avatar_thumb.url_list.0'),
-      nickname: get(data, 'author.nickname'),
-      sec_uid: get(data, 'author.sec_uid'),
-      uid: get(data, 'author.uid'),
-    },
-    music: {
-      title: get(data, 'music.title'),
-      url: get(data, 'music.play_url.uri'),
-    },
-    video: {
-      cover: get(data, 'video.origin_cover.url_list'),
-      url: get(data, 'video.play_addr.url_list'),
-    },
-    image: {},
+    vid: getVideoId(data),
+    sec_uid: getSecUid(data),
+    uid: getAuthorId(data),
+    avatar_thumb: getAvatarUrl(data),
+    nickname: getNickName(data),
+    music: getMusic(data),
+    musicUrl: getMusicUrl(data),
+    videoUrl: getVideoUrl(data),
+    cover: getCoverUrl(data),
   }
 }
 export function getHomeVideoBySecUid(secUid: string): Promise<any> {
@@ -158,8 +161,8 @@ function fetchVideo(url: string): Readable {
     const reader = res.body.getReader()
     while (true) {
       const { value, done } = await reader.read()
+
       if (done) {
-        stream.push(null)
         stream.emit('end', { size: contentLength })
         break
       }
@@ -173,7 +176,7 @@ function fetchVideo(url: string): Readable {
   return stream
 }
 export function downloadFromInfo(data: DouyinVideoDataResult) {
-  const videoUrl = getVideo(data)
+  const videoUrl = getVideoUrl(data)
   let current = 0
   if (!Array.isArray(videoUrl) || videoUrl.length === 0)
     throw new Error('video url failed')
