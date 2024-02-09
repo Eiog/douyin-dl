@@ -1,19 +1,19 @@
 {
-  "name": "doydl",
+  "name": "douyin-dl",
   "type": "module",
-  "version": "0.1.2",
+  "version": "0.1.0",
   "packageManager": "pnpm@7.18.0",
   "description": "",
   "author": "Eiog",
   "license": "MIT",
-  "homepage": "https://github.com/Eiog/doydl",
+  "homepage": "https://github.com/Eiog/douyin-dl",
   "repository": {
     "type": "git",
-    "url": "git@github.com:Eiog/doydl.git"
+    "url": "git@github.com:Eiog/douyin-dl.git"
   },
-  "bugs": "https://github.com/Eiog/doydl/issues",
+  "bugs": "https://github.com/Eiog/douyin-dl/issues",
   "keywords": [
-    "doydl",
+    "douyin-dl",
     "douyin downloader",
     "douyin"
   ],
