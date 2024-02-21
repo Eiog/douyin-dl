@@ -667,7 +667,7 @@ export interface Item_warn_notification {
 	content: string;
 }
 
-export interface Aweme_list {
+export interface Aweme_detail {
 	aweme_id: string;
 	desc: string;
 	create_time: number;
@@ -795,7 +795,7 @@ export interface DouYinHomeDataResult {
 	min_cursor: number;
 	max_cursor: number;
 	has_more: number;
-	aweme_list: Aweme_list[];
+	aweme_list: Aweme_detail[];
 	time_list: string[];
 	log_pb: Log_pb;
 	request_item_cursor: number;
