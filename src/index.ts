@@ -11,8 +11,8 @@ interface DouyinVideoDataResult {
 
 const { get } = objectPath
 const shareRegex = /http[s]?:\/\/(douyin.com|v.douyin.com)\/(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+/
-const videoDataUrl = (videoId: string) => `https://www.douyin.com/aweme/v1/web/aweme/detail/?device_platform=webapp&aid=6383&channel=channel_pc_web&aweme_id=${videoId}&pc_client_type=1&version_code=190500&version_name=19.5.0&cookie_enabled=true&screen_width=1344&screen_height=756&browser_language=zh-CN&browser_platform=Win32&browser_name=Firefox&browser_version=110.0&browser_online=true&engine_name=Gecko&engine_version=109.0&os_name=Windows&os_version=10&cpu_core_num=16&device_memory=&platform=PC&webid=7158288523463362079&msToken=abL8SeUTPa9-EToD8qfC7toScSADxpg6yLh2dbNcpWHzE0bT04txM_4UwquIcRvkRb9IU8sifwgM1Kwf1Lsld81o9Irt2_yNyUbbQPSUO8EfVlZJ_78FckDFnwVBVUVK`
-const homePageUrl = (secUid: string, maxCursor: number) => `https://www.douyin.com/aweme/v1/web/aweme/post/?sec_user_id=${secUid}&count=35&max_cursor=${maxCursor}&aid=1128&version_name=23.5.0&device_platform=android&os_version=2333`
+// const videoDataUrl = (videoId: string) => `https://www.douyin.com/aweme/v1/web/aweme/detail/?device_platform=webapp&aid=6383&channel=channel_pc_web&aweme_id=${videoId}&pc_client_type=1&version_code=190500&version_name=19.5.0&cookie_enabled=true&screen_width=1344&screen_height=756&browser_language=zh-CN&browser_platform=Win32&browser_name=Firefox&browser_version=110.0&browser_online=true&engine_name=Gecko&engine_version=109.0&os_name=Windows&os_version=10&cpu_core_num=16&device_memory=&platform=PC&webid=7158288523463362079&msToken=abL8SeUTPa9-EToD8qfC7toScSADxpg6yLh2dbNcpWHzE0bT04txM_4UwquIcRvkRb9IU8sifwgM1Kwf1Lsld81o9Irt2_yNyUbbQPSUO8EfVlZJ_78FckDFnwVBVUVK`
+// const homePageUrl = (secUid: string, maxCursor: number) => `https://www.douyin.com/aweme/v1/web/aweme/post/?sec_user_id=${secUid}&count=35&max_cursor=${maxCursor}&aid=1128&version_name=23.5.0&device_platform=android&os_version=2333`
 const headers = {
   'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36',
 }
@@ -25,6 +25,12 @@ const douyinApiHeaders = {
 export function setCookie(cookie: string) {
   douyinApiHeaders.cookie = cookie
 }
+export function generateXBogusUrl(url: string) {
+  const query = new URL(url).searchParams.toString()
+  const xbogus = sign(query, headers['User-Agent'])
+
+  return `${url}&X-Bogus=${xbogus}`
+}
 /**
  * 验证分享链接是否包含抖音分享链接
  * @param url String 分享链接
@@ -32,16 +38,20 @@ export function setCookie(cookie: string) {
  */
 export const validateUrl = (url: string) => shareRegex.test(url)
 
-export const getVideoId = (data: DouyinVideoDataResult): string | null => get(data, 'aweme_detail.aweme_id')
-export const getAuthorId = (data: DouyinVideoDataResult): number | null => get(data, 'aweme_detail.author_user_id')
-export const getSecUid = (data: DouyinVideoDataResult): string | null => get(data, 'aweme_detail.author.sec_uid')
-export const getNickName = (data: DouyinVideoDataResult): string | null => get(data, 'aweme_detail.author.nickname')
-export const getMusic = (data: DouyinVideoDataResult): string | null => get(data, 'aweme_detail.music.title')
-
-export const getVideoUrl = (data: DouyinVideoDataResult): string[] | null => get(data, 'aweme_detail.video.play_addr.url_list')
-export const getAvatarUrl = (data: DouyinVideoDataResult): string[] | null => get(data, 'aweme_detail.author.avatar_thumb.url_list')
-export const getCoverUrl = (data: DouyinVideoDataResult): string[] | null => get(data, 'aweme_detail.video.origin_cover.url_list')
-export const getMusicUrl = (data: DouyinVideoDataResult): string[] | null => get(data, 'aweme_detail.music.play_url.uri')
+export const getItem = {
+  getVideoId: (data: DouyinVideoDataResult): string | null => get(data, 'aweme_detail.aweme_id'),
+  getAuthorId: (data: DouyinVideoDataResult): number | null => get(data, 'aweme_detail.author_user_id'),
+  getSecUid: (data: DouyinVideoDataResult): string | null => get(data, 'aweme_detail.author.sec_uid'),
+  getTitle: (data: DouyinVideoDataResult): string | null => get(data, 'aweme_detail.preview_title'),
+  getNickName: (data: DouyinVideoDataResult): string | null => get(data, 'aweme_detail.author.nickname'),
+  getMusicName: (data: DouyinVideoDataResult): string | null => get(data, 'aweme_detail.music.title'),
+  getVideoUrl: (data: DouyinVideoDataResult): string[] | null => get(data, 'aweme_detail.video.play_addr.url_list'),
+  getAvatarUrl: (data: DouyinVideoDataResult): string[] | null => get(data, 'aweme_detail.author.avatar_thumb.url_list'),
+  getCoverUrl: (data: DouyinVideoDataResult): string[] | null => get(data, 'aweme_detail.video.origin_cover.url_list'),
+  getMusicUrl: (data: DouyinVideoDataResult): string[] | null => get(data, 'aweme_detail.music.play_url.uri'),
+  getShareUrl: (data: DouyinVideoDataResult): string | null => get(data, 'aweme_detail.share_url'),
+  getVideoSize: (data: DouyinVideoDataResult): number | null => get(data, 'aweme_detail.video.play_addr.data_size'),
+}
 export function getShortUrlByShareUrl(url: string) {
   const match = url.match(shareRegex)
   if (match && match?.length > 0)
@@ -68,30 +78,38 @@ export function getRealUrlByShortUrl(url: string): Promise<string> {
     })
   })
 }
-export function generateXBogusUrl(url: string) {
-  const query = new URL(url).searchParams.toString()
-  const xbogus = sign(query, headers['User-Agent'])
+export function getRealUrlByShareUrl(url: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    if (!validateUrl(url))
+      return reject('URL validation failed')
 
-  return `${url}&X-Bogus=${xbogus}`
+    const shortUrl = getShortUrlByShareUrl(url)
+    if (!shortUrl)
+      return reject('Failed to get short link')
+
+    getRealUrlByShortUrl(shortUrl).then((res) => {
+      return resolve(res)
+    }).catch((error: any) => {
+      return reject(error)
+    })
+  })
 }
-export function getDouyinVideoIdByRealUrl(realUrl: string) {
-  if (realUrl.includes('/video/')) {
-    const ids = realUrl.match(/\/video\/(\d+)?/)
-    if (ids && ids.length > 0)
-      return ids[0].replace('/video/', '')
-    return null
-  }
-  if (realUrl.includes('discover?')) {
-    const ids = realUrl.match(/modal_id=(\d+)/)
-    if (ids && ids.length > 0)
-      return ids[0]
-    return null
-  }
+export function getVideoIdByRealUrl(realUrl: string) {
+  const match = realUrl.match(/video\/([^\/]+)/)
+  if (match && match.length > 0)
+    return match[1]
   return null
 }
-export function getDouyinVideoDataByVideoId(videoId: string): Promise<DouyinVideoDataResult> {
+export function getSecIdByRealUrl(realUrl: string) {
+  const match = realUrl.match(/user\/([^\/]+)/)
+  if (match && match.length > 0)
+    return match[1]
+  return null
+}
+export function getVideoDataByVideoId(videoId: string): Promise<DouyinVideoDataResult> {
   return new Promise((resolve, reject) => {
-    const newApiUrl = generateXBogusUrl(videoDataUrl(videoId))
+    const url = `https://www.douyin.com/aweme/v1/web/aweme/detail/?aweme_id=${videoId}`
+    const newApiUrl = generateXBogusUrl(url)
     fetch(newApiUrl, { headers: douyinApiHeaders }).then(res => res.json()).then((res) => {
       return resolve(res)
     }).catch((error: any) => {
@@ -99,26 +117,14 @@ export function getDouyinVideoDataByVideoId(videoId: string): Promise<DouyinVide
     })
   })
 }
-export function format(data: DouyinVideoDataResult) {
-  return {
-    vid: getVideoId(data),
-    sec_uid: getSecUid(data),
-    uid: getAuthorId(data),
-    avatar_thumb: getAvatarUrl(data),
-    nickname: getNickName(data),
-    music: getMusic(data),
-    musicUrl: getMusicUrl(data),
-    videoUrl: getVideoUrl(data),
-    cover: getCoverUrl(data),
-  }
-}
-export function getHomeVideoBySecUid(secUid: string): Promise<any> {
+
+export function getHomeDataBySecUid(secUid: string, count = 10, maxCursor = 0): Promise<any> {
   return new Promise((resolve, reject) => {
-    const maxCursor = 0
-    const newApiUrl = generateXBogusUrl(homePageUrl(secUid, maxCursor))
+    const url = `https://www.douyin.com/aweme/v1/web/aweme/post/?sec_user_id=${secUid}&count=${count}&max_cursor=${maxCursor}`
+    const newApiUrl = generateXBogusUrl(url)
     fetch(newApiUrl, { headers: douyinApiHeaders }).then(res => res.json()).then((res) => {
-      if (res.data)
-        return resolve(res.data)
+      if (res)
+        return resolve(res)
       return reject(res.toString())
     }).catch((error: any) => {
       return reject(error.toString())
@@ -127,31 +133,44 @@ export function getHomeVideoBySecUid(secUid: string): Promise<any> {
 }
 export function getInfo(url: string): Promise<DouyinVideoDataResult> {
   return new Promise((resolve, reject) => {
-    if (!validateUrl(url))
-      return reject('Link validation failed')
-
-    const shortUrl = getShortUrlByShareUrl(url)
-    if (!shortUrl)
-      return reject('Failed to get short link')
-
-    getRealUrlByShortUrl(shortUrl).then((res) => {
-      const videoId = getDouyinVideoIdByRealUrl(res)
+    getRealUrlByShareUrl(url).then((res) => {
+      const videoId = getVideoIdByRealUrl(res)
       if (!videoId)
         return reject('Failed to get ID')
 
-      getDouyinVideoDataByVideoId(videoId).then((res) => {
+      getVideoDataByVideoId(videoId).then((res) => {
         resolve(res)
       }).catch((error: any) => {
-        return reject(error.toString())
+        return reject(error)
       })
     }).catch((error: any) => {
-      return reject(error.toString())
+      return reject(error)
     })
   })
 }
-function fetchVideo(url: string): Readable {
+export function getHomeInfo(url: string, count = 10, maxCursor = 0): Promise<DouyinVideoDataResult> {
+  return new Promise((resolve, reject) => {
+    getRealUrlByShareUrl(url).then((res) => {
+      const secUid = getSecIdByRealUrl(res)
+      if (!secUid)
+        return reject('Failed to get secUid')
+
+      getHomeDataBySecUid(secUid, count, maxCursor).then((res) => {
+        resolve(res)
+      }).catch((error: any) => {
+        return reject(error)
+      })
+    }).catch((error: any) => {
+      return reject(error)
+    })
+  })
+}
+
+export function fetchStream(url: string): Readable {
   const stream = new Readable({
-    read: () => true,
+    read: () => {
+
+    },
   })
   fetch(url, { headers }).then(async (res) => {
     const contentLength = Number(res.headers.get('Content-Length')) || 0
@@ -176,19 +195,17 @@ function fetchVideo(url: string): Readable {
   return stream
 }
 export function downloadFromInfo(data: DouyinVideoDataResult) {
-  const videoUrl = getVideoUrl(data)
+  const videoUrl = getItem.getVideoUrl(data)
   let current = 0
   if (!Array.isArray(videoUrl) || videoUrl.length === 0)
     throw new Error('video url failed')
-  function fetchStream(url: string) {
-    return fetchVideo(url)
-  }
-  const stream = fetchStream(videoUrl[current])
+
+  let stream = fetchStream(videoUrl[current])
   stream.on('error', () => {
     current += 1
     if (current >= videoUrl.length - 1)
       throw new Error('video url failed')
-    fetchStream(videoUrl[current])
+    stream = fetchStream(videoUrl[current])
   })
   return stream
 }

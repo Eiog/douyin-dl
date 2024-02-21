@@ -52,6 +52,7 @@
     "type:check": "tsc --noEmit",
     "cz": "czg",
     "commit": "git pull && git add -A && pnpm cz && git push",
+    "link": "pnpm link --global",
     "preinstall": "npx only-allow pnpm",
     "postinstall": "npx simple-git-hooks"
   },
