@@ -785,26 +785,109 @@ export interface Aweme_detail {
 	origin_text_extra: any[];
 	preview_title: string;
 }
-
+export interface Aweme_list {
+	aweme_id: string;
+	desc: string;
+	create_time: number;
+	author: Author;
+	music: Music;
+	original: number;
+	video: Video;
+	share_url: string;
+	user_digged: number;
+	statistics: Statistic;
+	status: Statu;
+	component_info_v2: string;
+	text_extra: Text_extra[];
+	is_top: number;
+	user_recommend_status: number;
+	share_info: Share_info;
+	live_appointment_info: Live_appointment_info;
+	video_labels: any[];
+	voice_modify_id_list?: any;
+	duration: number;
+	aweme_type: number;
+	slides_music_beats?: any;
+	item_title: string;
+	image_infos?: any;
+	risk_infos: Risk_info;
+	ref_voice_modify_id_list?: any;
+	is_life_item: boolean;
+	position?: any;
+	uniqid_position?: any;
+	comment_list?: any;
+	author_user_id: number;
+	mark_largely_following: boolean;
+	geofencing: any[];
+	comment_words_recommend: Comment_words_recommend;
+	authentication_token: string;
+	region: string;
+	video_text: any[];
+	guide_btn_type: number;
+	collect_stat: number;
+	label_top_text?: any;
+	promotions: any[];
+	group_id: string;
+	prevent_download: boolean;
+	nickname_position?: any;
+	challenge_position?: any;
+	ref_tts_id_list?: any;
+	is_image_beat: boolean;
+	ip_attribution: string;
+	long_video?: any;
+	tts_id_list?: any;
+	visual_search_info: Visual_search_info;
+	feed_comment_config: Feed_comment_config;
+	entertainment_product_info: Entertainment_product_info;
+	interaction_stickers?: any;
+	author_mask_tag: number;
+	origin_comment_ids?: any;
+	commerce_config_data?: any;
+	create_scale_type?: any;
+	video_control: Video_control;
+	aweme_control: Aweme_control;
+	activity_video_type: number;
+	caption: string;
+	anchor_info: Anchor_info;
+	disable_relation_bar: number;
+	book_bar: Book_bar;
+	anchors?: any;
+	hybrid_label?: any;
+	geofencing_regions?: any;
+	media_type: number;
+	common_bar_info: string;
+	is_story: number;
+	collection_corner_mark: number;
+	cover_labels?: any;
+	photo_search_entrance: Photo_search_entrance;
+	image_crop_ctrl: number;
+	packed_clips?: any;
+	distribute_circle: Distribute_circle;
+	images?: any;
+	item_warn_notification: Item_warn_notification;
+	horizontal_type: number;
+	video_game_data_channel_config: Video_game_data_channel_config;
+	impression_data: Impression_data;
+	image_comment: Image_comment;
+	is_use_music: boolean;
+	standard_bar_info_list?: any;
+	social_tag_list?: any;
+	suggest_words: Suggest_word;
+	show_follow_button: Show_follow_button;
+	duet_aggregate_in_music_tab: boolean;
+	is_duet_sing: boolean;
+	comment_permission_info: Comment_permission_info;
+	original_images?: any;
+	series_paid_info: Series_paid_info;
+	comment_gid: number;
+	admire_auth: Admire_auth;
+	press_panel_info: string;
+	image_album_music_info: Image_album_music_info;
+	video_tag: Video_tag[];
+	is_collects_selected: number;
+	chapter_list?: any;
+}
 export interface Log_pb {
 	impr_id: string;
 }
 
-export interface DouYinHomeDataResult {
-	status_code: number;
-	min_cursor: number;
-	max_cursor: number;
-	has_more: number;
-	aweme_list: Aweme_detail[];
-	time_list: string[];
-	log_pb: Log_pb;
-	request_item_cursor: number;
-	post_serial: number;
-	replace_series_cover: number;
-}
-
-export interface DouYinVideoDataResult {
-	aweme_detail: Aweme_detail;
-	log_pb: Log_pb;
-	status_code: number;
-}

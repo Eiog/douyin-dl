@@ -2,8 +2,29 @@
 import { Readable } from 'node:stream'
 import * as objectPath from 'object-path'
 import { sign } from '../public/x-bogus.cjs'
-import type { DouYinHomeDataResult, DouYinVideoDataResult } from './type'
+import type { Aweme_detail, Aweme_list, Log_pb } from './type'
 
+export interface DouYinHomeDataResult {
+  status_code: number
+  min_cursor: number
+  max_cursor: number
+  has_more: number
+  aweme_list: Aweme_list[]
+  time_list: string[]
+  log_pb: Log_pb
+  request_item_cursor: number
+  post_serial: number
+  replace_series_cover: number
+}
+
+export interface DouYinVideoDataResult {
+  aweme_detail: Aweme_detail
+  log_pb: Log_pb
+  status_code: number
+}
+
+export type DouYinHomeData = DouYinHomeDataResult
+export type DouYinVideoData = DouYinVideoDataResult
 const { get } = objectPath
 const shareRegex = /http[s]?:\/\/(douyin.com|v.douyin.com)\/(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+/
 const headers = {
