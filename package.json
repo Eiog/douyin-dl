@@ -57,6 +57,7 @@
     "postinstall": "npx simple-git-hooks"
   },
   "dependencies": {
+    "m3u8stream": "^0.8.6",
     "object-path": "^0.11.8"
   },
   "devDependencies": {

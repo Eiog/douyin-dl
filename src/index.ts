@@ -1,8 +1,10 @@
 /* eslint-disable prefer-promise-reject-errors */
 import { Readable } from 'node:stream'
 import * as objectPath from 'object-path'
+import m3u8stream from 'm3u8stream'
 import { sign } from '../public/x-bogus.cjs'
 import type { Aweme_detail, Aweme_list, Log_pb } from './type'
+import type { Data, Extra } from './live'
 
 export interface DouYinHomeDataResult {
   status_code: number
@@ -22,9 +24,11 @@ export interface DouYinVideoDataResult {
   log_pb: Log_pb
   status_code: number
 }
-
-export type DouYinHomeData = DouYinHomeDataResult
-export type DouYinVideoData = DouYinVideoDataResult
+export interface DouYinLiveDataResult {
+  data: Data
+  extra: Extra
+  status_code: number
+}
 const { get } = objectPath
 const shareRegex = /http[s]?:\/\/(douyin.com|v.douyin.com)\/(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+/
 const headers = {
@@ -120,6 +124,12 @@ export function getSecIdByRealUrl(realUrl: string) {
     return match[1]
   return null
 }
+export function getRoomIdRealUrl(realUrl: string) {
+  const match = realUrl.match(/reflow\/([^\/]+)/)
+  if (match && match.length > 0)
+    return match[1]
+  return null
+}
 export function getVideoDataByVideoId(videoId: string): Promise<DouYinVideoDataResult> {
   return new Promise((resolve, reject) => {
     const url = `https://www.douyin.com/aweme/v1/web/aweme/detail/?aweme_id=${videoId}`
@@ -139,9 +149,22 @@ export function getHomeDataBySecUid(secUid: string, count = 10, maxCursor = 0): 
     fetch(newApiUrl, { headers: douyinApiHeaders }).then(res => res.json()).then((res) => {
       if (res)
         return resolve(res)
+      return reject(res)
+    }).catch((error: any) => {
+      return reject(error)
+    })
+  })
+}
+export function getLiveDataByRoomId(roomId: string): Promise<DouYinLiveDataResult> {
+  return new Promise((resolve, reject) => {
+    const url = `https://live.douyin.com/webcast/room/web/enter/?aid=6383&web_rid=41410224889&room_id_str=${roomId}`
+    const newApiUrl = generateXBogusUrl(url)
+    fetch(newApiUrl, { headers: douyinApiHeaders }).then(res => res.json()).then((res) => {
+      if (res)
+        return resolve(res)
       return reject(res.toString())
     }).catch((error: any) => {
-      return reject(error.toString())
+      return reject(error)
     })
   })
 }
@@ -231,4 +254,26 @@ export function download(url: string): Promise<Readable> {
       return reject(error)
     })
   })
+}
+export async function getLiveInfo(url: string): Promise<DouYinLiveDataResult> {
+  return new Promise((resolve, reject) => {
+    getRealUrlByShareUrl(url).then((res) => {
+      const roomId = getRoomIdRealUrl(res)
+      if (!roomId)
+        return reject('Failed to get RoomId')
+
+      getLiveDataByRoomId(roomId).then((res) => {
+        resolve(res)
+      }).catch((error: any) => {
+        return reject(error)
+      })
+    }).catch((error: any) => {
+      return reject(error)
+    })
+  })
+}
+export function liveStream(data: DouYinLiveDataResult) {
+  const m3u8Url = get(data, 'data.data.0.stream_url.hls_pull_url')
+  const stream = m3u8stream(m3u8Url)
+  return stream
 }

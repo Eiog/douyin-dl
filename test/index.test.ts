@@ -4,6 +4,7 @@ import {
   getHomeDataBySecUid,
   getHomeInfo,
   getInfo,
+  getLiveInfo,
   getRealUrlByShareUrl,
   getRealUrlByShortUrl,
   getSecIdByRealUrl,
@@ -15,6 +16,7 @@ import {
 
 const shareUrl = '5.89 PXM:/ 02/14 a@A.TL # 纯御  https://v.douyin.com/iNQ9oyAP/ 复制此链接，打开Dou音搜索，直接观看视频！'
 const homeShareUrl = '长按复制此条消息，打开抖音搜索，查看TA的更多作品。 https://v.douyin.com/iNQ9uVeF/'
+const liveUrl = '9- #在抖音，记录美好生活#【蜡笔小安】正在直播，来和我一起支持Ta吧。复制下方链接，打开【抖音】，直接观看直播！ https://v.douyin.com/iNGCDLue/ 7@7.com :1pm'
 const shortUrl = 'https://v.douyin.com/iNQ9oyAP/'
 const realUrl = 'https://www.iesdouyin.com/share/video/7335840551448677673/'
 const homeRealUrl = 'https://www.iesdouyin.com/share/user/MS4wLjABAAAA1Y94tsS-DdoR4Ky9mMY7TghX-mvm0NDMjS9cxby5B1Y'
@@ -57,5 +59,8 @@ describe('doydl test', () => {
   })
   it('getHomeInfo', () => {
     expect(getHomeInfo(homeShareUrl)).toBeTypeOf('object')
+  })
+  it('getLiveInfo', () => {
+    expect(getLiveInfo(liveUrl)).toBeTypeOf('object')
   })
 })
